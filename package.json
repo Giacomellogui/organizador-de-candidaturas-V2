@@ -1,0 +1,16 @@
+{
+  "name": "organizador-candidaduras",
+  "version": "1.0.0",
+  "description": "Aplicação para ajudar pessoas em busca de emprego a organizar suas candidaturas em um só lugar. Permite registrar vagas e acompanhar a etapa de cada processo seletivo.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "typescript": "^7.0.2"
+  }
+}

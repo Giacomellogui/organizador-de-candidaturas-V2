@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizador de Candidaturas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <header class="cabecalho">
+            <h1>Organizador de Candidaturas</h1>
+            <p>
+                Acompanhe suas oportunidades e organize cada etapa
+                da sua próxima conquista profissional.
+            </p>
+        </header>
+        <form action="" id="formulario">
+            <h2 id="titulo-formulario">Nova candidatura</h2>
+            <p class="formulario-descricao">
+                Preencha os dados para acompanhar esta oportunidade.
+            </p>
+            <div class="campo">
+                <label for="empresa">Empresa</label>
+                <input type="text" id="empresa" name="empresa" placeholder="Ex.: Empresa Exemplo" required>
+            </div>
+
+            <div class="campo">
+                <label for="cargo">Cargo</label>
+                <input type="text" id="cargo" name="cargo" placeholder="Ex.: Desenvolvedo Júnior" required>
+            </div>
+
+            <div class="campo">
+                <label for="link">Link para a vaga (opcional)</label>
+                <input type="url" id="link" name="link" placeholder="https://empresa.com/vaga">
+            </div>
+
+            <div class="campo">
+                <label for="data">Data de candidatura</label>
+                <input type="date" id="data" name="data" required>
+            </div>
+
+            <div class="campo">
+                <label for="etapa">Etapa</label>
+                <select id="etapa" name="etapa" required>
+                    <option value="enviada">Enviada</option>
+                    <option value="entrevista">Entrevista</option>
+                    <option value="selecao">Seleção</option>
+                    <option value="finalizada">Finalizada</option>
+                </select>
+            </div>
+
+            <button type="submit" id="botao-salvar">Cadastrar candidatura</button>
+            <button type="button" id="botao-cancelar" hidden>Cancelar Edição</button>
+        </form>
+
+        <section>
+            <h2>Candidaturas Cadastradas</h2>
+            <label for="filtro-etapa">Filtrar por Etapa</label>
+            <select id="filtro-etapa">
+                <option value="todas">Todas</option>
+                <option value="enviada">Enviada</option>
+                <option value="entrevista">Entrevista</option>
+                <option value="selecao">Seleção</option>
+                <option value="finalizada">Finalizada</option>
+            </select>
+            <p id="mensagem-vazia" hidden>Nenhuma candidatura encontrada.</p>
+            <p id="contador-candidaturas">0 candidaturas exibidas</p>
+            <ul id="lista-candidaturas">
+                
+            </ul>
+        </section>
+
+    </main>
+    <script type="module" src="dist/script.js"></script>
+</body>
+</html>

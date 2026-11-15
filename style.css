@@ -1,0 +1,295 @@
+* {
+    box-sizing: border-box;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+main {
+    max-width: 1120px;
+    margin: 40px auto;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+    gap: 24px 32px;
+    align-items: start;
+}
+
+.cabecalho {
+    grid-column: 1 / -1;
+    margin-bottom: 8px;
+}
+
+.cabecalho h1 {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -1px;
+    color: #0f172a;
+}
+
+.cabecalho p {
+    margin: 0;
+    max-width: 600px;
+    color: #475569;
+    font-size: 16px;
+}
+
+main > form,
+main > section {
+    min-width: 0;
+    padding: 24px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+}
+
+main > form {
+    align-self: start;
+}
+
+main > section h2 {
+    margin-top: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    margin: 0;
+    line-height: 1.5;
+}
+
+input:focus,
+select:focus {
+    border-color: #2563eb;
+    outline: 3px solid #dbeafe;
+    outline-offset: 1px;
+}
+
+button:focus-visible,
+a:focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 3px;
+}
+
+label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+input, select {
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font: inherit;
+}
+
+button {
+   background-color: #2563eb;
+   color: white;
+   padding: 12px;
+   border: none;
+   border-radius: 6px;
+   font: inherit;
+   cursor: pointer;
+}
+button:hover {
+    background-color: #1d4ed8;
+}
+
+#lista-candidaturas {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+#lista-candidaturas li {
+    padding: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #f9fafb;
+    overflow-wrap: anywhere;
+}
+
+.candidatura-acoes {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.candidatura-acoes button {
+    padding: 8px 12px;
+}
+
+.candidatura-acoes a {
+    margin-right: auto;
+}
+
+.botao-excluir {
+    background-color: #dc2626;
+}
+
+.botao-excluir:hover {
+    background-color: #b91c1c;
+}
+
+@media (max-width: 800px) {
+    main {
+        grid-template-columns: minmax(0, 1fr);
+        margin: 16px;
+        padding: 0;
+    }
+
+    main > form,
+    main > section {
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+}
+
+#lista-candidaturas h3 {
+    margin: 0 0 4px;
+    font-size: 18px;
+}
+
+.candidatura-cargo {
+    margin: 0 0 12px;
+    color: #374151;
+}
+
+.candidatura-detalhes {
+    margin: 0 0 16px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.etapa {
+    display: inline-block;
+    padding: 4px 10px;
+    margin-bottom: 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.etapa-enviada {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.etapa-entrevista {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.etapa-selecao {
+    background-color: #ede9fe;
+    color: #5b21b6;
+}
+
+.etapa-finalizada {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+#lista-candidaturas a {
+    color: #1d4ed8;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+#lista-candidaturas a:hover {
+    text-decoration: underline;
+}
+
+.botao-editar {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.botao-editar:hover {
+    background-color: #dbeafe;
+}
+
+#botao-cancelar {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+#botao-cancelar:hover {
+    background-color: #d1d5db;
+}
+
+main > h1 {
+    font-size: clamp(28px, 4vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -1px;
+    color: #0f172a;
+}
+
+main > p {
+    max-width: 600px;
+    color: #475569;
+    font-size: 16px;
+}
+
+main > form,
+main > section {
+    box-shadow: 0 4px 20px rgb(15 23 42 / 4%);
+}
+
+#mensagem-vazia {
+    padding: 32px 20px;
+    text-align: center;
+    color: #475569;
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+}
+
+#contador-candidaturas {
+    margin: 16px 0;
+    font-size: 14px;
+    color: #475569;
+}
+
+#filtro-etapa {
+    margin-left: 8px;
+    background-color: white;
+}
+
+#formulario h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.formulario-descricao {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: #475569;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+input::placeholder {
+    color: #64748b;
+    opacity: 1;
+}
