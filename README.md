@@ -14,3 +14,4 @@ O projeto utiliza **HTML5, CSS3 e TypeScript**, com foco em uma interface intuit
 🛠️ **Tecnologias utilizadas:** HTML5 | CSS3 | TypeScript
 
 🎯 **Objetivo:** Desenvolver uma solução simples e funcional para centralizar informações sobre processos seletivos, além de aprimorar conhecimentos em desenvolvimento web e TypeScript.
+
