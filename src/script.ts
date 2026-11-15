@@ -1,10 +1,73 @@
+interface HistoricoEtapa {
+  etapa: string;
+  data: string;
+}
+
 interface Candidatura {
   empresa: string;
   cargo: string;
   link: string;
   data: string;
   etapa: string;
+  historico?: HistoricoEtapa[];
 }
+
+function ehHistoricoEtapa(valor: unknown): valor is HistoricoEtapa {
+  if (typeof valor !== "object" || valor === null) {
+    return false;
+  }
+
+  return (
+    "etapa" in valor &&
+    typeof valor.etapa === "string" &&
+    ["enviada", "entrevista", "selecao", "finalizada"].includes(valor.etapa) &&
+    "data" in valor &&
+    typeof valor.data === "string" &&
+    Number.isFinite(Date.parse(valor.data))
+  );
+}
+
+function ehCandidatura(valor: unknown): valor is Candidatura {
+  if (typeof valor !== "object" || valor === null) {
+    return false;
+  }
+
+  return (
+    "empresa" in valor &&
+    typeof valor.empresa === "string" &&
+    "cargo" in valor &&
+    typeof valor.cargo === "string" &&
+    "link" in valor &&
+    typeof valor.link === "string" &&
+    "data" in valor &&
+    typeof valor.data === "string" &&
+    "etapa" in valor &&
+    typeof valor.etapa === "string" &&
+    ["enviada", "entrevista", "selecao", "finalizada"].includes(valor.etapa) &&
+    (
+      !("historico" in valor) ||
+      (
+        Array.isArray(valor.historico) &&
+        valor.historico.every(ehHistoricoEtapa)
+      )
+    )
+  );
+}
+
+const elementoBusca = document.querySelector("#busca");
+
+if (!(elementoBusca instanceof HTMLInputElement)) {
+  throw new Error("Campo de busca não encontrado.");
+}
+
+const campoBusca: HTMLInputElement = elementoBusca;
+const elementoOrdenacao = document.querySelector("#ordenacao");
+
+if (!(elementoOrdenacao instanceof HTMLSelectElement)) {
+  throw new Error("Seletor de ordenação não encontrado.");
+}
+
+const campoOrdenacao: HTMLSelectElement = elementoOrdenacao;
 
 const elementoMensagem = document.querySelector("#mensagem-vazia");
 const elementoContador = document.querySelector("#contador-candidaturas");
@@ -35,9 +98,40 @@ if (!(elementoFiltro instanceof HTMLSelectElement)) {
 
 const filtroEtapa: HTMLSelectElement = elementoFiltro;
 
-const candidaturas: Candidatura[] = JSON.parse(
-  localStorage.getItem("candidaturas") || "[]",
-);
+function carregarCandidaturas(): Candidatura[] {
+  const texto = localStorage.getItem("candidaturas");
+
+  if (texto === null) {
+    return [];
+  }
+
+  try {
+    const dados: unknown = JSON.parse(texto);
+
+    if (!Array.isArray(dados) || !dados.every(ehCandidatura)) {
+      throw new Error("Formato de candidaturas inválido.");
+    }
+
+    return dados;
+  } catch (erro) {
+    // Guarda uma cópia antes de iniciar uma lista vazia.
+    localStorage.setItem(
+      "candidaturas-backup-" + Date.now(),
+      texto,
+    );
+
+    console.error("Erro ao carregar candidaturas:", erro);
+
+    alert(
+      "Não foi possível carregar as candidaturas. " +
+      "Uma cópia dos dados foi preservada neste navegador.",
+    );
+
+    return [];
+  }
+}
+
+const candidaturas: Candidatura[] = carregarCandidaturas();
 
 let candidaturaEmEdicao: Candidatura | null = null;
 
@@ -80,6 +174,13 @@ if (!(elementoData instanceof HTMLInputElement)) {
 }
 
 const campoData: HTMLInputElement = elementoData;
+const hoje = new Date();
+
+const ano = hoje.getFullYear();
+const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+const dia = String(hoje.getDate()).padStart(2, "0");
+
+campoData.max = `${ano}-${mes}-${dia}`;
 
 const elementoEtapa = document.querySelector("#etapa");
 
@@ -141,6 +242,29 @@ function mostrarCandidatura(candidatura: Candidatura): void {
   detalhes.textContent = "Candidatura em " + dataFormatada;
 
   item.append(empresa, cargo, etiqueta, detalhes);
+  if (candidatura.historico && candidatura.historico.length > 0) {
+  const painelHistorico = document.createElement("details");
+  painelHistorico.classList.add("candidatura-historico");
+
+  const resumo = document.createElement("summary");
+  resumo.textContent = "Histórico de etapas";
+
+  painelHistorico.appendChild(resumo);
+
+  candidatura.historico.forEach(function (registro) {
+    const linha = document.createElement("p");
+
+    const nomeEtapa = nomesEtapas[registro.etapa] ?? registro.etapa;
+
+    const momento = new Date(registro.data).toLocaleString("pt-BR");
+
+    linha.textContent = nomeEtapa + " — " + momento;
+
+    painelHistorico.appendChild(linha);
+  });
+
+  item.appendChild(painelHistorico);
+}
 
   const acoes = document.createElement("div");
   acoes.classList.add("candidatura-acoes");
@@ -201,6 +325,14 @@ function mostrarCandidatura(candidatura: Candidatura): void {
 formulario.addEventListener("submit", function (event) {
   event.preventDefault();
 
+  campoEmpresa.value = campoEmpresa.value.trim();
+  campoCargo.value = campoCargo.value.trim();
+  campoLink.value = campoLink.value.trim();
+
+  if (!formulario.reportValidity()) {
+    return;
+  }
+
   const candidatura: Candidatura = {
     empresa: campoEmpresa.value,
     cargo: campoCargo.value,
@@ -209,9 +341,29 @@ formulario.addEventListener("submit", function (event) {
     etapa: campoEtapa.value,
   };
 
+  const momento = new Date().toISOString();
+
   if (candidaturaEmEdicao !== null) {
+    if (candidaturaEmEdicao.etapa !== candidatura.etapa) {
+      if (!candidaturaEmEdicao.historico) {
+        candidaturaEmEdicao.historico = [];
+      }
+
+      candidaturaEmEdicao.historico.push({
+        etapa: candidatura.etapa,
+        data: momento,
+      });
+    }
+
     Object.assign(candidaturaEmEdicao, candidatura);
   } else {
+    candidatura.historico = [
+      {
+        etapa: candidatura.etapa,
+        data: momento,
+      },
+    ];
+
     candidaturas.push(candidatura);
   }
 
@@ -223,24 +375,39 @@ formulario.addEventListener("submit", function (event) {
 function atualizarLista(): void {
   lista.textContent = "";
 
-  candidaturas.forEach(function (candidatura) {
-    if (
-      filtroEtapa.value === "todas" ||
-      candidatura.etapa === filtroEtapa.value
-    ) {
-      mostrarCandidatura(candidatura);
-    }
+  const termo = campoBusca.value.trim().toLocaleLowerCase("pt-BR");
+
+  const candidaturasFiltradas = candidaturas.filter(function (candidatura) {
+    const correspondeBusca =
+      candidatura.empresa.toLocaleLowerCase("pt-BR").includes(termo) ||
+      candidatura.cargo.toLocaleLowerCase("pt-BR").includes(termo);
+
+    const correspondeEtapa =
+      filtroEtapa.value === "todas" || candidatura.etapa === filtroEtapa.value;
+
+    return correspondeBusca && correspondeEtapa;
   });
 
-  const quantidade = lista.children.length;
+  candidaturasFiltradas.sort(function (a, b) {
+    if (campoOrdenacao.value === "antigas") {
+      return a.data.localeCompare(b.data);
+    }
+
+    return b.data.localeCompare(a.data);
+  });
+
+  candidaturasFiltradas.forEach(function (candidatura) {
+    mostrarCandidatura(candidatura);
+  });
+
+  const quantidade = candidaturasFiltradas.length;
 
   mensagemVazia.hidden = quantidade > 0;
 
-  if (quantidade === 1) {
-    contadorCandidaturas.textContent = "1 candidatura exibida";
-  } else {
-    contadorCandidaturas.textContent = quantidade + " candidaturas exibidas";
-  }
+  contadorCandidaturas.textContent =
+    quantidade === 1
+      ? "1 candidatura exibida"
+      : quantidade + " candidaturas exibidas";
 }
 
 function encerrarEdicao(): void {
@@ -257,6 +424,104 @@ filtroEtapa.addEventListener("change", function () {
 
 botaoCancelar.addEventListener("click", function () {
   encerrarEdicao();
+});
+
+campoBusca.addEventListener("input", function () {
+  atualizarLista();
+});
+
+campoOrdenacao.addEventListener("change", function () {
+  atualizarLista();
+});
+
+const elementoExportar = document.querySelector("#botao-exportar");
+
+if (!(elementoExportar instanceof HTMLButtonElement)) {
+  throw new Error("Botão Exportar não encontrado.");
+}
+
+elementoExportar.addEventListener("click", function () {
+  const conteudo = JSON.stringify(candidaturas, null, 2);
+
+  const arquivo = new Blob([conteudo], {
+    type: "application/json",
+  });
+
+  const endereco = URL.createObjectURL(arquivo);
+  const linkDownload = document.createElement("a");
+
+  linkDownload.href = endereco;
+  linkDownload.download = "candidaturas.json";
+
+  document.body.appendChild(linkDownload);
+  linkDownload.click();
+  linkDownload.remove();
+
+  setTimeout(function () {
+    URL.revokeObjectURL(endereco);
+  }, 1000);
+});
+
+const elementoImportar = document.querySelector("#arquivo-importar");
+
+if (!(elementoImportar instanceof HTMLInputElement)) {
+  throw new Error("Campo de importação não encontrado.");
+}
+
+const campoImportar: HTMLInputElement = elementoImportar;
+
+campoImportar.addEventListener("change", async function () {
+  const arquivo = campoImportar.files?.[0];
+
+  if (!arquivo) {
+    return;
+  }
+
+  try {
+    const texto = await arquivo.text();
+    const dados: unknown = JSON.parse(texto);
+
+    if (!Array.isArray(dados) || !dados.every(ehCandidatura)) {
+      throw new Error("O arquivo não contém uma lista válida de candidaturas.");
+    }
+
+    const importadas: Candidatura[] = dados;
+
+    const confirmar = window.confirm(
+      `Importar ${importadas.length} candidaturas? ` +
+      "Elas serão adicionadas às existentes.",
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    const listaAtualizada = candidaturas.concat(importadas);
+
+    // Salva antes de modificar a lista exibida.
+    localStorage.setItem(
+      "candidaturas",
+      JSON.stringify(listaAtualizada),
+    );
+
+    importadas.forEach(function (candidatura) {
+      candidaturas.push(candidatura);
+    });
+
+    encerrarEdicao();
+    atualizarLista();
+
+    alert("Candidaturas importadas com sucesso!");
+  } catch (erro) {
+    console.error("Erro na importação:", erro);
+
+    alert(
+      "Não foi possível importar. Confira se o arquivo é um JSON " +
+      "de candidaturas válido e se o navegador permite salvar dados.",
+    );
+  } finally {
+    campoImportar.value = "";
+  }
 });
 
 atualizarLista();

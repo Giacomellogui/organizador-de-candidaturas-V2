@@ -15,24 +15,43 @@
                 da sua próxima conquista profissional.
             </p>
         </header>
-        <form action="" id="formulario">
+
+        <form id="formulario">
             <h2 id="titulo-formulario">Nova candidatura</h2>
             <p class="formulario-descricao">
                 Preencha os dados para acompanhar esta oportunidade.
             </p>
+
             <div class="campo">
                 <label for="empresa">Empresa</label>
-                <input type="text" id="empresa" name="empresa" placeholder="Ex.: Empresa Exemplo" required>
+                <input
+                    type="text"
+                    id="empresa"
+                    name="empresa"
+                    placeholder="Ex.: Empresa Exemplo"
+                    required
+                >
             </div>
 
             <div class="campo">
                 <label for="cargo">Cargo</label>
-                <input type="text" id="cargo" name="cargo" placeholder="Ex.: Desenvolvedo Júnior" required>
+                <input
+                    type="text"
+                    id="cargo"
+                    name="cargo"
+                    placeholder="Ex.: Desenvolvedor Júnior"
+                    required
+                >
             </div>
 
             <div class="campo">
                 <label for="link">Link para a vaga (opcional)</label>
-                <input type="url" id="link" name="link" placeholder="https://empresa.com/vaga">
+                <input
+                    type="url"
+                    id="link"
+                    name="link"
+                    placeholder="https://empresa.com/vaga"
+                >
             </div>
 
             <div class="campo">
@@ -50,13 +69,28 @@
                 </select>
             </div>
 
-            <button type="submit" id="botao-salvar">Cadastrar candidatura</button>
-            <button type="button" id="botao-cancelar" hidden>Cancelar Edição</button>
+            <button type="submit" id="botao-salvar">
+                Cadastrar candidatura
+            </button>
+
+            <button type="button" id="botao-cancelar" hidden>
+                Cancelar edição
+            </button>
         </form>
 
         <section>
             <h2>Candidaturas Cadastradas</h2>
-            <label for="filtro-etapa">Filtrar por Etapa</label>
+
+            <div class="campo">
+                <label for="busca">Buscar por empresa ou cargo</label>
+                <input
+                    type="search"
+                    id="busca"
+                    placeholder="Digite uma empresa ou cargo"
+                >
+            </div>
+
+            <label for="filtro-etapa">Filtrar por etapa</label>
             <select id="filtro-etapa">
                 <option value="todas">Todas</option>
                 <option value="enviada">Enviada</option>
@@ -64,14 +98,27 @@
                 <option value="selecao">Seleção</option>
                 <option value="finalizada">Finalizada</option>
             </select>
+
+            <div class="campo">
+                <label for="ordenacao">Ordenar por</label>
+                <select id="ordenacao">
+                    <option value="recentes">Mais recentes primeiro</option>
+                    <option value="antigas">Mais antigas primeiro</option>
+                </select>
+            </div>
+
             <p id="mensagem-vazia" hidden>Nenhuma candidatura encontrada.</p>
             <p id="contador-candidaturas">0 candidaturas exibidas</p>
-            <ul id="lista-candidaturas">
-                
-            </ul>
-        </section>
+            <button type="button" id="botao-exportar">Exportar candidaturas</button>
+            <div class="campo">
+                <label for="arquivo-importar">Importar candidaturas</label>
+                <input type="file" id="arquivo-importar" accept=".json,application/json">
+            </div>
 
+            <ul id="lista-candidaturas"></ul>
+        </section>
     </main>
+
     <script type="module" src="dist/script.js"></script>
 </body>
 </html>
